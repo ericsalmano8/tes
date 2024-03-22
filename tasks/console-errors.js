@@ -60,6 +60,15 @@ const checkPage = async (url) => {
           });
         }
       }
+    })
+
+    .on('request', (interceptedRequest) => {
+      const excludedFromScript = excludedScripts.some((excludedScript) => {
+        return interceptedRequest.url().includes(excludedScript);
+      });
+      if (excludedFromScript) {
+        interceptedRequest.abort();
+      } else interceptedRequest.continue();
     });
 
   await page.goto(url, { waitUntil: 'domcontentloaded' });
